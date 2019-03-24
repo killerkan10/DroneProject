@@ -1,161 +1,103 @@
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 
-        class Drone{
+                class Drone{
 
-            static void finalPosition() throws IOException
-            {
-                //String st = "r+-+l++r++l--r--";
-                String st;
-                String right = "R";
-                String left = "L";
+                    static void finalPosition() throws IOException
+                    {
+                        String st;
+                        String right = "R";
+                        String left = "L";
 
-                String North = "N";
-                String East = "E";
-                String South = "S";
-                String West = "W";
+                        String plus = "+";
+                        String minus = "-";
 
-                String plus = "+";
-                String minus = "-";
+                        int bearing = 1;
+                        int bearingHolder = 1;
+                        int longitude = 0;
+                        int latitude =0;
 
-                int baring = 1;
-                int baringHolder = 1;
-                int longitude = 0;
-                int latitude =0;
+                        Map<String, Integer> Direction = new HashMap<>();
 
-                File file = new File("C:\\Users\\Adam\\IdeaProjects\\Drone\\src\\problem-basic-input.txt");
+                        Direction.put("N", 1);
+                        Direction.put("E", 2);
+                        Direction.put("S", 3);
+                        Direction.put("W", 4);
 
-                BufferedReader br = new BufferedReader(new FileReader(file));
+                        //reading in input file
+                        File file = new File("C:\\Users\\Adam\\IdeaProjects\\Drone\\src\\problem-basic-input.txt");
+                        BufferedReader br = new BufferedReader(new FileReader(file));
 
-                while ((st = br.readLine()) != null){
+                        //looping through input file and applying to string st
+                        while ((st = br.readLine()) != null){
 
-                    // String[] splitArray = st.split("");
-                    // System.out.print(st);
+                            //splitting string into array
+                            String[] splitArray = st.split("");
+
+                            for (int i = 0; i <= splitArray.length - 1; i++) {
+
+                                //setting direction of drone 1 being north 4 being west
+                                if(bearing == 0){
+                                    bearing = 4;
+                                    bearingHolder = bearing;
+                                }else if(bearing == 5){
+                                    bearing = 1;
+                                    bearingHolder = bearing;
+                                }
+
+                                // arraylist to check if array posisiton i is in hashmap
+                                if( Arrays.asList("N","E","S","W").contains(splitArray[i]) ){
+
+                                    //set baring to cardinal direction
+                                    bearingHolder = bearing;
+                                    bearing = Direction.get(splitArray[i]);
+                                }
+
+                                //allows drone to turn right or left 90 degrees  by adding or minus 1 to bearing
+                                if (splitArray[i].equals(right)){
+                                    bearing = bearingHolder;
+                                    bearing++;
+                                    bearingHolder = bearing;
+                                }else if(splitArray[i].equals(left)){
+                                    bearing = bearingHolder;
+                                    bearing--;
+                                    bearingHolder = bearing;
 
 
-                    String[] splitArray = st.split("");
-                    System.out.println(Arrays.toString(splitArray));
-                    //System.out.println("start"+baring);
+                                    //allows drone to move fowards or backwards depending on the drones facing direction
+                                }else if(splitArray[i].equals(plus) && bearing == 1 || splitArray[i].equals(minus) && bearing == 3){
+                                    longitude++;
 
+                                } else if(splitArray[i].equals(plus) && bearing == 2  || splitArray[i].equals(minus) && bearing == 4){
+                                    latitude++;
 
-                    for (int i = 0; i <= splitArray.length - 1; i++) {
-                        //System.out.println(i);
+                                }
+                                else if(splitArray[i].equals(plus) && bearing == 3 || splitArray[i].equals(minus) && bearing == 1){
+                                    longitude--;
 
+                                } else if(splitArray[i].equals(plus) && bearing == 4 || splitArray[i].equals(minus) && bearing == 2){
+                                    latitude--;
+                                }
 
-                        if(baring == 0){
-                            baring = 4;
-                            baringHolder = baring;
-                            System.out.println("baring reset to 4");
-                        }else if(baring == 5){
-                            baring = 1;
-                            baringHolder = baring;
-                            System.out.println("baring reset to 1");
+                            }
+                            System.out.printf("The final coordinates are (%s,%s)\n",latitude,longitude);
+
                         }
+                    }
 
 
-                        if (splitArray[i].equals(right)){
-                            baring = baringHolder;
-                            System.out.println("baringholder" + baringHolder);
-                            System.out.println("baring" + baring);
-                            baring++;
-                            baringHolder = baring;
-                            System.out.println("baring right "+baring);
+                    public static void main(String[] args) throws IOException
+                    {
 
-                        }else if(splitArray[i].equals(left)){
-                            baring = baringHolder;
-                            baring--;
-                            baringHolder = baring;
-                            System.out.println("baring left "+ baring);
-
-
-
-
-
-                        } else if(splitArray[i].equals(North)){
-                            baringHolder = baring;
-                            baring = 1;
-                            System.out.println("Cardinal north "+ baring);
-
-                        } else if(splitArray[i].equals(East)){
-                            baringHolder = baring;
-                            System.out.println("baringholder" + baringHolder);
-                            baring = 2;
-                            System.out.println("Cardinal east "+ baring);
-
-                        } else if(splitArray[i].equals(South)){
-                            baringHolder = baring;
-                            baring = 3;
-                            System.out.println("baring holder"+ baringHolder);
-                            System.out.println("Cardinal south "+ baring);
-
-                        } else if(splitArray[i].equals(West)){
-                            baringHolder = baring;
-                            baring = 4;
-                            System.out.println("Cardinal west "+ baring);
-                        }
-
-
-
-
-                        else if(splitArray[i].equals(plus) && baring == 1){
-                            longitude++;
-                            System.out.println("1 + longitude ="+longitude);
-
-                        } else if(splitArray[i].equals(plus) && baring == 2){
-                            latitude++;
-                            System.out.println("1 + latitude ="+latitude);
-                        }
-                        else if(splitArray[i].equals(plus) && baring == 3){
-                            longitude--;
-                            System.out.println("1 - longitude ="+longitude);
-
-                        } else if(splitArray[i].equals(plus) && baring == 4){
-                            latitude--;
-                            System.out.println("1 - latitude ="+latitude);
-                        }
-
-
-
-
-                        else if(splitArray[i].equals(minus) && baring == 1){
-                            longitude--;
-                            System.out.println("1 - longitude ="+longitude);
-
-                        } else if(splitArray[i].equals(minus) && baring == 2){
-                            latitude--;
-                            System.out.println("1 - latitude ="+latitude);
-                        }
-                        else if(splitArray[i].equals(minus) && baring == 3){
-                            longitude++;
-                            System.out.println("1 + longitude ="+longitude);
-
-                        } else if(splitArray[i].equals(minus) && baring == 4){
-                            latitude++;
-                            System.out.println("1 + latitude ="+latitude);
-                        }
-
-
-
-                        System.out.printf("(%s,%s)\n",latitude,longitude);
-
+                        finalPosition();
 
 
                     }
-                    System.out.printf("The final coordinates are (%s,%s)\n",latitude,longitude);
-
                 }
-            }
-
-
-            public static void main(String[] args) throws IOException
-            {
-
-                finalPosition();
-
-
-            }
-        }
